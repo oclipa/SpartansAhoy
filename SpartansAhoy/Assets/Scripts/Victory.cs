@@ -10,7 +10,8 @@ public class Victory : MonoBehaviour {
 	// then the player has reached the victory point of the level
 	void OnTriggerEnter2D (Collider2D other)
 	{
-		if ((other.tag == "Player" ) && (!taken) && (other.gameObject.GetComponent<CharacterController2D>().playerCanMove))
+        // object is player, coin is not taken, and player is not paused
+        if ((other.tag == "Player" ) && (!taken) && (other.gameObject.GetComponent<CharacterController2D>().playerCanMove))
 		{
 			// mark as taken so doesn't get taken multiple times
 			taken=true;
@@ -25,7 +26,7 @@ public class Victory : MonoBehaviour {
 			other.gameObject.GetComponent<CharacterController2D>().Victory();
 
 			// destroy the victory gameobject
-			DestroyObject(this.gameObject);
+			Destroy(this.gameObject);
 		}
 	}
 

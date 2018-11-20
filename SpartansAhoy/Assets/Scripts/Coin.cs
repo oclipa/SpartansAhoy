@@ -11,6 +11,7 @@ public class Coin : MonoBehaviour {
 	// then take the coin
 	void OnTriggerEnter2D (Collider2D other)
 	{
+        // object is player, coin is not taken, and player is not paused
 		if ((other.tag == "Player" ) && (!taken) && (other.gameObject.GetComponent<CharacterController2D>().playerCanMove))
 		{
 			// mark as taken so doesn't get taken multiple times
@@ -26,7 +27,7 @@ public class Coin : MonoBehaviour {
 			other.gameObject.GetComponent<CharacterController2D>().CollectCoin(coinValue);
 
 			// destroy the coin
-			DestroyObject(this.gameObject);
+			Destroy(this.gameObject);
 		}
 	}
 

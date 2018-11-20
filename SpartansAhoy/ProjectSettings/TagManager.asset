@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Platform
   - Ground
+  - MovingPlatform
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - Platform
   - Ground
   - Background
-  - 
-  - 
+  - Enemy
+  - StunnedEnemy
   - 
   - 
   - 
@@ -48,6 +50,9 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Enemy
+    uniqueID: 2145942007
     locked: 0
   - name: Player
     uniqueID: 2080329601

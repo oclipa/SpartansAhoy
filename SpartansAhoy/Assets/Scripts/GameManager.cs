@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour {
 
 		// setup all the variables, the UI, and provide errors if things not setup properly.
 		setupDefaults();
+
+        ScreenUtils.Initialize();
 	}
 
 	// game loop
@@ -52,10 +54,13 @@ public class GameManager : MonoBehaviour {
 				UIGamePaused.SetActive(false); // remove the pause UI
 			}
 		}
-	}
 
-	// setup all the variables, the UI, and provide errors if things not setup properly.
-	void setupDefaults() {
+        _spawnLocation = new Vector3(Camera.main.transform.position.x, -1.982f, 0f);
+
+    }
+
+    // setup all the variables, the UI, and provide errors if things not setup properly.
+    void setupDefaults() {
 		// setup reference to player
 		if (_player == null)
 			_player = GameObject.FindGameObjectWithTag("Player");

@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4732697352601024}
   - component: {fileID: 212574161034652394}
   - component: {fileID: 61746223222991988}
+  - component: {fileID: 114863817871267312}
   m_Layer: 10
   m_Name: Dirt_GrassOneSide
   m_TagString: Ground
@@ -66,6 +67,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114863817871267312
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1118596658336662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45892825b3faf41e49bfc72b06565938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabTree: {fileID: 1428376965763316, guid: 9336b7ed0b88f4a57bb859d48d43f26d, type: 2}
 --- !u!212 &212574161034652394
 SpriteRenderer:
   m_ObjectHideFlags: 1

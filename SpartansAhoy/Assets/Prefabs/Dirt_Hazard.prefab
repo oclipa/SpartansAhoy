@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4027856231653316}
   - component: {fileID: 212963098090153522}
   - component: {fileID: 61209422893334060}
+  - component: {fileID: 114055179719418058}
   m_Layer: 10
   m_Name: Dirt_Hazard
   m_TagString: Ground
@@ -66,6 +67,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114055179719418058
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1744333873114844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 387e559367a5342fc8bc7b59de4169ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212963098090153522
 SpriteRenderer:
   m_ObjectHideFlags: 1

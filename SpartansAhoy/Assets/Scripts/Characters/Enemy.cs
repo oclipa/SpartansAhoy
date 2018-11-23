@@ -24,9 +24,15 @@ public class Enemy : MonoBehaviour {
     public float waitAtWaypointTime = 1f;   // how long to wait at a waypoint
 	
 	public bool loopWaypoints = true; // should it loop through the waypoints
-	
-	// SFXs
-	public AudioClip stunnedSFX;
+
+    // LayerMask to determine what is considered ground for the enemy
+    public LayerMask whatIsGround;
+
+    // Transform just below feet for checking if player is grounded
+    public Transform groundCheck;
+
+    // SFXs
+    public AudioClip stunnedSFX;
 	public AudioClip attackSFX;
 	
 	// private variables below
@@ -43,9 +49,11 @@ public class Enemy : MonoBehaviour {
 	float _moveTime; 
 	float _vx = 0f;
 	bool _moving = true;
-	
-	// store the layer number the enemy is on (setup in Awake)
-	int _enemyLayer;
+    bool _isGrounded = false;
+
+
+    // store the layer number the enemy is on (setup in Awake)
+    int _enemyLayer;
 
 	// store the layer number the enemy should be moved to when stunned
 	int _stunnedLayer;
@@ -98,7 +106,22 @@ public class Enemy : MonoBehaviour {
 				_animator.SetBool("Moving", false);
 			}
 		}
-	}
+
+        // Check to see if character is grounded by raycasting from the middle of the player
+        // down to the groundCheck position and see if collected with gameobjects on the
+        // whatIsGround layer
+        _isGrounded = Physics2D.Linecast(_transform.position, groundCheck.position, whatIsGround);
+
+        // if on ground, ensure waypoints move along ground
+        if (_isGrounded && myWaypoints.Length > 2)
+        {
+            Vector3 groundLeft = new Vector3(ScreenUtils.GetCameraLeftEdge(Camera.main) + 1, -1.982f, 0f);
+            Vector3 groundRight = new Vector3(ScreenUtils.GetCameraRightEdge(Camera.main) - 1, -1.982f, 0f);
+
+            myWaypoints[0].transform.position = groundLeft;
+            myWaypoints[1].transform.position = groundRight;
+        }
+    }
 	
 	// Move the enemy through its rigidbody based on its waypoints
 	void EnemyMovement() {

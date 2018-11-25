@@ -15,8 +15,9 @@ public class GameManager : MonoBehaviour {
 	// game performance
 	public int score = 0;
 	public int highscore = 0;
-	public int startLives = 3;
-	public int lives = 3;
+    public int victoryScore = 20;
+    public int startLives = 10;
+	public int lives = 10;
 
 	// UI elements to control
 	public Text UIScore;
@@ -24,9 +25,18 @@ public class GameManager : MonoBehaviour {
 	public Text UILevel;
 	public GameObject[] UIExtraLives;
 	public GameObject UIGamePaused;
+    public GameObject Fireworks;
 
-	// private variables
-	GameObject _player;
+    // platforms objects
+    public GameObject prefabPlatform;
+    public GameObject prefabMovingPlatform;
+    public GameObject prefabEnemy;
+    public GameObject prefabMovingEnemy;
+    public GameObject prefabCoin;
+
+
+    // private variables
+    GameObject _player;
 	Vector3 _spawnLocation;
 	Scene _scene;
 
@@ -42,8 +52,13 @@ public class GameManager : MonoBehaviour {
         ScreenUtils.Initialize();
 	}
 
-	// game loop
-	void Update() {
+    private void Start()
+    {
+        buildInitialPlatforms();
+    }
+
+    // game loop
+    void Update() {
 		// if ESC pressed then pause the game
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			if (Time.timeScale > 0f) {
@@ -57,6 +72,13 @@ public class GameManager : MonoBehaviour {
 
         _spawnLocation = new Vector3(Camera.main.transform.position.x, -1.982f, 0f);
 
+    }
+
+    void buildInitialPlatforms()
+    {
+        SceneBuilder.CreatePlatform(prefabPlatform, prefabCoin, prefabEnemy, prefabMovingEnemy, new Vector3(-6f, 0f, 0f), 3);
+        SceneBuilder.CreatePlatform(prefabPlatform, prefabCoin, prefabEnemy, prefabMovingEnemy, new Vector3(2f, 0f, 0f), 3);
+        SceneBuilder.CreateMovingPlatform(prefabMovingPlatform, prefabCoin, prefabEnemy, new Vector3(0f, 2f, 0f));
     }
 
     // setup all the variables, the UI, and provide errors if things not setup properly.
@@ -114,7 +136,7 @@ public class GameManager : MonoBehaviour {
 			PlayerPrefManager.ResetPlayerState(startLives,false);
 			lives = PlayerPrefManager.GetLives();
 		}
-		score = PlayerPrefManager.GetScore();
+		//score = PlayerPrefManager.GetScore();
 		highscore = PlayerPrefManager.GetHighscore();
 
 		// save that this level has been accessed so the MainMenu can enable it
@@ -141,8 +163,9 @@ public class GameManager : MonoBehaviour {
 	// public function to add points and update the gui and highscore player prefs accordingly
 	public void AddPoints(int amount)
 	{
-		// increase score
-		score+=amount;
+        //Debug.Log("AddPoints");
+        // increase score
+        score += amount;
 
 		// update UI
 		UIScore.text = "Score: "+score.ToString();
@@ -152,7 +175,27 @@ public class GameManager : MonoBehaviour {
 			highscore = score;
 			UIHighScore.text = "Highscore: "+score.ToString();
 		}
-	}
+
+        //Debug.Log("score = " +score);
+        //Debug.Log("victoryScore = " + victoryScore);
+        if (score>=victoryScore)
+        {
+            //Debug.Log("Fireworks");
+
+            Camera.main.GetComponent<Camera2DScroll>().StopScrolling();
+
+            GameObject sparty = GameObject.FindGameObjectWithTag("Player");
+
+            // if explosion prefab is provide, then instantiate it
+            if (Fireworks)
+            {
+                Instantiate(Fireworks, sparty.transform.position, sparty.transform.rotation);
+            }
+
+            // do the player victory thing
+            sparty.GetComponent<CharacterController2D>().Victory();
+        }
+    }
 
 	// public function to remove player life and reset game accordingly
 	public void ResetGame() {

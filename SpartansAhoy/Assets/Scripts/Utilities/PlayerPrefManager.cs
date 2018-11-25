@@ -51,7 +51,7 @@ public static class PlayerPrefManager {
 	
 	// reset stored player state and variables back to defaults
 	public static void ResetPlayerState(int startLives, bool resetHighscore) {
-		Debug.Log ("Player State reset.");
+		//Debug.Log ("Player State reset.");
 		PlayerPrefs.SetInt("Lives",startLives);
 		PlayerPrefs.SetInt("Score", 0);
 

@@ -10,7 +10,7 @@ public abstract class ObjectScroller : MonoBehaviour {
     Camera currentCamera;
 
     // Use this for initialization
-    void Start()
+    protected virtual void Start()
     {
         foreach (Camera c in Camera.allCameras)
         {
@@ -30,48 +30,56 @@ public abstract class ObjectScroller : MonoBehaviour {
     // Update is called once per frame
     void Update () 
     {
-        // if the dirt is no longer on the screen
-        if (!checkOnScreen())
+        // if object is no longer on the screen
+        if (ExitScreenLeft())
         {
-            // move the dirt to the other side of the screen
+            // move the object to the other side of the screen
             Vector3 currentPosition = transform.position;
-            float newX = GetNewX(currentPosition.x);
-            Vector3 newPosition = new Vector3(newX, currentPosition.y, currentPosition.z);
-            transform.position = newPosition;
+            float newX = GetNewLeftX(currentPosition.x);
+            if (newX != 0f)
+            {
+                Vector3 newPosition = new Vector3(newX, currentPosition.y, currentPosition.z);
+                transform.position = newPosition;
 
-            AddDecoration();
-        } 
+                UpdateDisplay();
+            }
+        }
+        else if (ExitScreenRight())
+        {
+            // move the object to the other side of the screen
+            Vector3 currentPosition = transform.position;
+            float newX = GetNewRightX(currentPosition.x);
+            if (newX != 0f)
+            {
+                Vector3 newPosition = new Vector3(newX, currentPosition.y, currentPosition.z);
+                transform.position = newPosition;
+
+                UpdateDisplay();
+            }
+        }
     }
 
-    protected abstract float GetNewX(float currentX);
+    protected virtual float GetNewLeftX(float currentX)
+    {
+        return 0f;
+    }
 
-    protected abstract void AddDecoration();
+    protected virtual float GetNewRightX(float currentX)
+    {
+        return 0f;
+    }
 
-    private bool checkOnScreen()
+    protected abstract void UpdateDisplay();
+
+    protected virtual bool ExitScreenLeft()
     {
         float rightEdge = transform.position.x + halfWidth;
-        // dirt if on screen if right edge of dirt is further right than screen left
-        return rightEdge > ScreenUtils.GetCameraLeftEdge(this.currentCamera);
+        return rightEdge < ScreenUtils.GetCameraLeftEdge(this.currentCamera);
     }
 
-    //private float getCameraLeftEdge()
-    //{
-    //    float bgScreenZ = -this.currentCamera.transform.position.z;
-    //    Vector3 bgLowerLeftCornerScreen = new Vector3(0, 0, bgScreenZ);
-    //    Vector3 bgLowerLeftCornerWorld =
-    //        this.currentCamera.ScreenToWorldPoint(bgLowerLeftCornerScreen);
-
-    //    return bgLowerLeftCornerWorld.x;
-    //}
-
-    //private float getCameraRightEdge()
-    //{
-    //    float bgScreenZ = -this.currentCamera.transform.position.z;
-    //    Vector3 bgUpperRightCornerScreen = new Vector3(
-    //        Screen.width, Screen.height, bgScreenZ);
-    //    Vector3 bgUpperRightCornerWorld =
-    //        this.currentCamera.ScreenToWorldPoint(bgUpperRightCornerScreen);
-
-    //    return bgUpperRightCornerWorld.x;
-    //}
+    protected virtual bool ExitScreenRight()
+    {
+        float leftEdge = transform.position.x - halfWidth;
+        return leftEdge > ScreenUtils.GetCameraRightEdge(this.currentCamera);
+    }
 }

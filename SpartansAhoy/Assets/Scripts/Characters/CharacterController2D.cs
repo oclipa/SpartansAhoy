@@ -32,13 +32,14 @@ public class CharacterController2D : MonoBehaviour {
 	public AudioClip jumpSFX;
 	public AudioClip victorySFX;
 
-	// private variables below
+    // private variables below
 
-	// store references to components on the gameObject
-	Transform _transform;
+    // store references to components on the gameObject
+    Transform _transform;
 	Rigidbody2D _rigidbody;
 	Animator _animator;
 	AudioSource _audio;
+    SpriteRenderer _spriteRenderer;
 
 	// hold player motion in this timestep
 	float _vx;
@@ -49,9 +50,14 @@ public class CharacterController2D : MonoBehaviour {
     bool _isGrounded = false;
     bool _isRunning = false;
     bool _canDoubleJump = false;
+    bool _isInvincible = false;
 
-	// store the layer the player is on (setup in Awake)
-	int _playerLayer;
+    float _timePassedSinceInvincible = 0f;
+    float _timePassedSinceAlphaChanged = 0f;
+    float _prevAlpha = 0f;
+
+    // store the layer the player is on (setup in Awake)
+    int _playerLayer;
 
 	// number of layer that Platforms are on (setup in Awake)
 	int _platformLayer;
@@ -80,7 +86,10 @@ public class CharacterController2D : MonoBehaviour {
 
 		// determine the platform's specified layer
 		_platformLayer = LayerMask.NameToLayer("Platform");
-	}
+
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
+    }
 
 	// this is where most of the player controller magic happens each game event loop
 	void Update()
@@ -88,6 +97,29 @@ public class CharacterController2D : MonoBehaviour {
 		// exit update if player cannot move or game is paused
 		if (!playerCanMove || (Time.timeScale == 0f))
 			return;
+
+        if (_isInvincible)
+        {
+            _timePassedSinceInvincible += Time.deltaTime;
+            _timePassedSinceAlphaChanged += Time.deltaTime;
+
+            if (_timePassedSinceAlphaChanged > 0.2f)
+            {
+                _timePassedSinceAlphaChanged = 0f;
+                Color color = _spriteRenderer.color;
+                color.a = color.a < 1.0f ? 1.0f : 0.5f;
+                _spriteRenderer.color = color;
+            }
+
+            if (_timePassedSinceInvincible > 3.0f)
+            {
+                _timePassedSinceInvincible = 0f;
+                _isInvincible = false;
+                Color color = _spriteRenderer.color;
+                color.a = 1.0f;
+                _spriteRenderer.color = color;
+            }
+        }
 
 		// determine horizontal velocity change based on the horizontal input
         _vx = CrossPlatformInputManager.GetAxisRaw ("Horizontal");
@@ -224,15 +256,20 @@ public class CharacterController2D : MonoBehaviour {
 
 	// public function to apply damage to the player
 	public void ApplyDamage (int damage) {
-		if (playerCanMove) {
-			playerHealth -= damage;
+        if (!_isInvincible)
+        {
+            if (playerCanMove)
+            {
+                playerHealth -= damage;
 
-			if (playerHealth <= 0) { // player is now dead, so start dying
-				PlaySound(deathSFX);
-				StartCoroutine (KillPlayer ());
-			}
-		}
-	}
+                if (playerHealth <= 0)
+                { // player is now dead, so start dying
+                    PlaySound(deathSFX);
+                    StartCoroutine(KillPlayer());
+                }
+            }
+        }
+    }
 
 	// public function to kill the player when they have a fall death
 	public void FallDeath () {
@@ -253,7 +290,7 @@ public class CharacterController2D : MonoBehaviour {
 
 			// play the death animation
 			_animator.SetTrigger("Death");
-			
+
 			// After waiting tell the GameManager to reset the game
 			yield return new WaitForSeconds(2.0f);
 
@@ -288,6 +325,9 @@ public class CharacterController2D : MonoBehaviour {
 		_transform.parent = null;
 		_transform.position = spawnloc;
 		_animator.SetTrigger("Respawn");
+
+        _timePassedSinceInvincible = 0f;
+        _isInvincible = true;
 	}
 
 

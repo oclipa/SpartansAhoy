@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class TreeScroller : ObjectScroller
 {
-    public GameObject prefabTree;
-
-    protected override float GetNewX(float currentX)
+    protected override float GetNewLeftX(float currentX)
     {
         return currentX;
     }
 
-    protected override void AddDecoration()
+    protected override void UpdateDisplay()
     {
         Destroy(this.gameObject);
     }

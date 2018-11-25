@@ -10,15 +10,20 @@ public class Enemy : MonoBehaviour {
     [Tooltip("Child game object for detecting stun.")]
 	public GameObject stunnedCheck; // what gameobject is the stunnedCheck
 
-	public float stunnedTime = 3f;   // how long to wait at a waypoint
-	
-	public string stunnedLayer = "StunnedEnemy";  // name of the layer to put enemy on when stunned
+	public float stunnedTime = 3f;   // how long to be stunned for
+
+    public float killDelayTime = 8f;   // how long to wdelay before destroying this gameobject
+
+    public string stunnedLayer = "StunnedEnemy";  // name of the layer to put enemy on when stunned
 	public string playerLayer = "Player";  // name of the player layer to ignore collisions with when stunned
 	
     [HideInInspector]
 	public bool isStunned = false;  // flag for isStunned
-	
-	public GameObject[] myWaypoints; // to define the movement waypoints
+
+    public GameObject prefabMovingEnemy;
+    public GameObject prefabWaypoint;
+
+    public GameObject[] myWaypoints; // to define the movement waypoints
 
     [Tooltip("How much time in seconds to wait at each waypoint.")]
     public float waitAtWaypointTime = 1f;   // how long to wait at a waypoint
@@ -34,16 +39,20 @@ public class Enemy : MonoBehaviour {
     // SFXs
     public AudioClip stunnedSFX;
 	public AudioClip attackSFX;
-	
-	// private variables below
-	
-	// store references to components on the gameObject
-	Transform _transform;
+    public AudioClip explosionSFX;
+
+    // private variables below
+
+    // store references to components on the gameObject
+    Transform _transform;
 	Rigidbody2D _rigidbody;
 	Animator _animator;
 	AudioSource _audio;
-	
-	// movement tracking
+    SpriteRenderer _spriteRenderer;
+    BoxCollider2D _boxCollider;
+    CircleCollider2D _circleCollider;
+
+    // movement tracking
     [SerializeField]
 	int _myWaypointIndex = 0; // used as index for My_Waypoints
 	float _moveTime; 
@@ -77,7 +86,12 @@ public class Enemy : MonoBehaviour {
 			_audio = gameObject.AddComponent<AudioSource>();
 		}
 
-		if (stunnedCheck==null) {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _boxCollider = GetComponent<BoxCollider2D>();
+        _circleCollider = GetComponent<CircleCollider2D>();
+
+
+        if (stunnedCheck==null) {
 			Debug.LogError("stunnedCheck child gameobject needs to be setup on the enemy");
 		}
 		
@@ -113,13 +127,42 @@ public class Enemy : MonoBehaviour {
         _isGrounded = Physics2D.Linecast(_transform.position, groundCheck.position, whatIsGround);
 
         // if on ground, ensure waypoints move along ground
-        if (_isGrounded && myWaypoints.Length > 2)
+        if (_isGrounded)
         {
-            Vector3 groundLeft = new Vector3(ScreenUtils.GetCameraLeftEdge(Camera.main) + 1, -1.982f, 0f);
-            Vector3 groundRight = new Vector3(ScreenUtils.GetCameraRightEdge(Camera.main) - 1, -1.982f, 0f);
+            if (myWaypoints == null || myWaypoints.Length == 0 && prefabMovingEnemy != null)
+            {
+                myWaypoints = new GameObject[2];
 
-            myWaypoints[0].transform.position = groundLeft;
-            myWaypoints[1].transform.position = groundRight;
+                GameObject movingEnemy = Object.Instantiate(prefabMovingEnemy, transform.position, Quaternion.identity);
+
+                int i = 0;
+                foreach(Transform child in movingEnemy.transform)
+                {
+                    if (child.CompareTag("Enemy"))
+                    {
+                        Destroy(child.gameObject);
+                    }
+                    else if (child.CompareTag("Waypoint"))
+                    {
+                        myWaypoints[i] = child.gameObject;
+                        i++;
+                    }
+                }
+                this.transform.SetParent(movingEnemy.transform);
+
+                //GameObject wayPoint2 = Object.Instantiate(prefabWaypoint, transform.position, Quaternion.identity);
+
+                //myWaypoints = new GameObject[] { wayPoint1, wayPoint2 };
+            }
+
+            if (myWaypoints.Length > 1)
+            {
+                Vector3 groundLeft = new Vector3(ScreenUtils.GetCameraLeftEdge(Camera.main) + 1, -1.982f, 0f);
+                Vector3 groundRight = new Vector3(ScreenUtils.GetCameraRightEdge(Camera.main) - 1, -1.982f, 0f);
+
+                myWaypoints[0].transform.position = groundLeft;
+                myWaypoints[1].transform.position = groundRight;
+            }
         }
     }
 	
@@ -225,31 +268,92 @@ public class Enemy : MonoBehaviour {
 	// play sound through the audiosource on the gameobject
 	void playSound(AudioClip clip)
 	{
-		_audio.PlayOneShot(clip);
+        _audio.PlayOneShot(clip);
 	}
-	
-	// setup the enemy to be stunned
-	public void Stunned()
+
+    public GameObject explosion;
+
+    // setup the enemy to be stunned
+    public void Explode()
+    {
+        if (explosion)
+        {
+            playSound(explosionSFX);
+
+            Vector3 explosionPosition = transform.position;
+            Instantiate(explosion, explosionPosition, transform.rotation);
+
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                GameObject otherEnemy = enemies[i];
+
+                if (otherEnemy != gameObject)
+                {
+                    Vector3 enemyPosition = otherEnemy.transform.position;
+
+                    float distance = Vector3.Distance(explosionPosition, enemyPosition);
+
+                    if (distance < 5f && otherEnemy != null)
+                        StartCoroutine(otherEnemy.GetComponent<Enemy>().Kill());
+                }
+            }
+
+
+            // have to delay destroying this enemy until the sound has played
+            StartCoroutine(Kill());
+        }
+    }
+
+    IEnumerator Kill()
+    {
+        //hide this enemy while we wait for it to be destroyed
+        Color color = _spriteRenderer.color;
+        color.a = 0f;
+        _spriteRenderer.color = color;
+
+        // and ensure we cannot hit it
+        _boxCollider.enabled = false;
+        _circleCollider.enabled = false;
+
+        yield return new WaitForSeconds(killDelayTime);
+
+        if (this.transform.parent.CompareTag("Enemy"))
+        {
+            Transform parent = this.transform.parent;
+            foreach (Transform child in parent)
+                Destroy(child.gameObject);
+            Destroy(parent.gameObject);
+        } 
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    // setup the enemy to be stunned
+    public void Stunned()
 	{
 		if (!isStunned) 
 		{
 			isStunned = true;
-			
-			// provide the player with feedback that enemy is stunned
-			playSound(stunnedSFX);
-			_animator.SetTrigger("Stunned");
-			
-			// stop moving
-			_rigidbody.velocity = new Vector2(0, 0);
-			
-			// switch layer to stunned layer so no collisions with the player while stunned
-			this.gameObject.layer = _stunnedLayer;
-			stunnedCheck.layer = _stunnedLayer;
 
-			// start coroutine to stand up eventually
-			StartCoroutine (Stand ());
-		}
-	}
+            // provide the player with feedback that enemy is stunned
+            playSound(stunnedSFX);
+            _animator.SetTrigger("Stunned");
+
+            // stop moving
+            _rigidbody.velocity = new Vector2(0, 0);
+
+            // switch layer to stunned layer so no collisions with the player while stunned
+            this.gameObject.layer = _stunnedLayer;
+            stunnedCheck.layer = _stunnedLayer;
+
+            // start coroutine to stand up eventually
+            StartCoroutine (Stand ());
+        }
+    }
 	
 	// coroutine to unstun the enemy and stand back up
 	IEnumerator Stand()

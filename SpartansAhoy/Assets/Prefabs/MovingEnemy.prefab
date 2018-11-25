@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4645070910993422}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,9 +34,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4232544738626930}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: MovingEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,9 +49,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4502236728798682}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Waypoint2
-  m_TagString: Untagged
+  m_TagString: Waypoint
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,9 +64,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4511344008403778}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Waypoint1
-  m_TagString: Untagged
+  m_TagString: Waypoint
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 82495589300405362}
   - component: {fileID: 95610609628234028}
   - component: {fileID: 114754416592285214}
+  - component: {fileID: 114315472571664124}
   m_Layer: 12
   m_Name: Enemy (1)
   m_TagString: Enemy
@@ -205,7 +206,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10000
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -261,7 +262,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.056848705, y: -0.21115232}
+  m_Offset: {x: -0.056848764, y: -0.21115232}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -272,7 +273,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3881997, y: 0.3178153}
+  m_Size: {x: 0.48790216, y: 0.3178153}
   m_EdgeRadius: 0
 --- !u!61 &61191895237364104
 BoxCollider2D:
@@ -286,7 +287,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.097454846, y: 0.10286912}
+  m_Offset: {x: -0.067188025, y: 0.10286912}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -297,7 +298,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.25284564, y: 0.057935894}
+  m_Size: {x: 0.36323047, y: 0.057935894}
   m_EdgeRadius: 0
 --- !u!82 &82495589300405362
 AudioSource:
@@ -423,6 +424,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0701263f8949b4221845998288c725b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114315472571664124
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1843016127566316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86a5ea9e44174d3692eb3102a130155, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114754416592285214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -438,9 +450,13 @@ MonoBehaviour:
   damageAmount: 10
   stunnedCheck: {fileID: 1999233516212310}
   stunnedTime: 3
+  killDelayTime: 8
   stunnedLayer: StunnedEnemy
   playerLayer: Player
   isStunned: 0
+  prefabMovingEnemy: {fileID: 1659554798146536}
+  prefabWaypoint: {fileID: 1601187180492036, guid: 140c624e4f1214bdb915ac411761ac5e,
+    type: 2}
   myWaypoints:
   - {fileID: 1810386228801280}
   - {fileID: 1703899925017486}
@@ -452,7 +468,9 @@ MonoBehaviour:
   groundCheck: {fileID: 4645070910993422}
   stunnedSFX: {fileID: 8300000, guid: b762b73ce975c452988aebe7e2e67724, type: 3}
   attackSFX: {fileID: 8300000, guid: f1c0f847b6c694d478e48493fa529b65, type: 3}
+  explosionSFX: {fileID: 8300000, guid: a0a9661ac687f424fad3464029864530, type: 3}
   _myWaypointIndex: 0
+  explosion: {fileID: 1651519707289926, guid: 20c3c40172ff74e1585b459bf4733191, type: 2}
 --- !u!212 &212446530905031144
 SpriteRenderer:
   m_ObjectHideFlags: 1

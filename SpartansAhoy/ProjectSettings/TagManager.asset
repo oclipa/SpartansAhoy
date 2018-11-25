@@ -9,6 +9,7 @@ TagManager:
   - MovingPlatform
   - Enemy
   - BackgroundCamera
+  - Waypoint
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Background
   - Enemy
   - StunnedEnemy
-  - 
+  - Coin
   - 
   - 
   - 

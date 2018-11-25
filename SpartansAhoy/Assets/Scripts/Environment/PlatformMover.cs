@@ -9,7 +9,7 @@ public class PlatformMover : MonoBehaviour {
 
 	[Range(0.0f, 10.0f)] // create a slider in the editor and set limits on moveSpeed
 	public float moveSpeed = 5f; // enemy move speed
-	public float waitAtWaypointTime = 1f; // how long to wait at a waypoint before _moving to next waypoint
+	public float waitAtWaypointTime = 1.5f; // how long to wait at a waypoint before _moving to next waypoint
 
 	public bool loop = true; // should it loop through the waypoints
 
@@ -29,11 +29,15 @@ public class PlatformMover : MonoBehaviour {
 	
 	// game loop
 	void Update () {
-		// if beyond _moveTime, then start moving
-		if (Time.time >= _moveTime) {
-			Movement();
-		}
-	}
+        if (this.gameObject != null && _transform != null)
+        {
+            // if beyond _moveTime, then start moving
+            if (Time.time >= _moveTime)
+            {
+                Movement();
+            }
+        }
+    }
 
 	void Movement() {
 		// if there isn't anything in My_Waypoints

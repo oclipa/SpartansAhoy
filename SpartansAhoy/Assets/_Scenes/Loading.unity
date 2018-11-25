@@ -461,7 +461,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Super Sparty Bros.
+  m_Text: Spartans Ahoy!
 --- !u!222 &1137038750
 CanvasRenderer:
   m_ObjectHideFlags: 0

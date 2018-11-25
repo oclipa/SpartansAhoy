@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class MountainScroller : ObjectScroller
 {
-    public GameObject prefabTree;
-
-    protected override float GetNewX(float currentX)
+    protected override float GetNewLeftX(float currentX)
     {
         return currentX + this.screenWidth + (this.halfWidth * 2);
     }
 
-    protected override void AddDecoration()
+    protected override void UpdateDisplay()
     {
     }
 }

@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4372915764214944}
   - component: {fileID: 114200193670148530}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MovingPlatform
-  m_TagString: Untagged
+  m_TagString: MovingPlatform
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38,6 +38,9 @@ GameObject:
   - component: {fileID: 212163130578817700}
   - component: {fileID: 61073628600318786}
   - component: {fileID: 50204707253039076}
+  - component: {fileID: 114080541708700690}
+  - component: {fileID: 58617371305312066}
+  - component: {fileID: 58925435818330062}
   m_Layer: 9
   m_Name: Platform
   m_TagString: MovingPlatform
@@ -53,9 +56,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4533951740002306}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Waypoint1
-  m_TagString: Untagged
+  m_TagString: Waypoint
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68,9 +71,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4083082701425352}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Waypoint2
-  m_TagString: Untagged
+  m_TagString: Waypoint
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -150,6 +153,36 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!58 &58617371305312066
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1800264991238592}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.9934551, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.037016094
+--- !u!58 &58925435818330062
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1800264991238592}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.99204785, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.044246018
 --- !u!61 &61073628600318786
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -175,6 +208,25 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2, y: 0.0569368}
   m_EdgeRadius: 0
+--- !u!114 &114080541708700690
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1800264991238592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e15340ab4e0242998ce098907bb5de3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPlatform: {fileID: 1088264523774474, guid: 56bafe03267db4ac1830bc5958df12f1,
+    type: 2}
+  prefebMovingPlatform: {fileID: 1475677712458942}
+  prefebEnemy: {fileID: 1741234456811312, guid: 22ddbcc9db3384b24bca3481df6b4716,
+    type: 2}
+  prefebMovingEnemy: {fileID: 1659554798146536, guid: ccc91ab5b07ef4518ad1f02e38270fed,
+    type: 2}
+  prefebCoin: {fileID: 1421631082633114, guid: e21ddae806a1a4f42a200e408d3e6333, type: 2}
 --- !u!114 &114200193670148530
 MonoBehaviour:
   m_ObjectHideFlags: 1

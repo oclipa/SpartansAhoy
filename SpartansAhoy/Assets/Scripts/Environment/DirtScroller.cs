@@ -8,7 +8,7 @@ public class DirtScroller : ObjectScroller
 
     protected override float GetNewLeftX(float currentX)
     {
-        return currentX + this.screenWidth + (this.halfWidth * 2);
+        return currentX + this.screenWidth + (this.halfWidth * 2) - 0.3f;
     }
 
     protected override void UpdateDisplay()
